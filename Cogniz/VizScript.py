@@ -85,12 +85,12 @@ def test_editUser():
     displayed_name = driver.find_element_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[1]/div/span[2]").text
     assert displayed_name == first_name
 
-
-def test_logoutUser(test_openBrowser):
-
-    driver.find_element_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div[1]/div/div/h5").click()
-    driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[2]/button[1]/span[1]").click()
-    actualUrl = driver.current_url
-    expectedUrl = "https://console.cognitensor.com/login"
-    assert actualUrl == expectedUrl
+#
+# def test_logoutUser(test_openBrowser):
+#
+#     driver.find_element_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div[1]/div/div/h5").click()
+#     driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[2]/button[1]/span[1]").click()
+#     actualUrl = driver.current_url
+#     expectedUrl = "https://console.cognitensor.com/login"
+#     assert actualUrl == expectedUrl
 
