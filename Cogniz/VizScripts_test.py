@@ -43,7 +43,6 @@ def test_login(test_openBrowser):
     driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[3]/div/button/span[1]').click()
     driver.implicitly_wait(20)
     actualHead = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/h2").text
-    print(actualHead)
     expectedHead = "Deep Optics"
     assert actualHead == expectedHead
 
@@ -78,11 +77,9 @@ def test_editUser():
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[4]/div/div/div/input").send_keys(company_profile)
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[5]/button/span[1]").click()
 
-    #wait = WebDriverWait(driver, 10)
-# loginStatus = wait.until(ec.presence_of_element_located(By.CLASS_NAME, "Toastify__toast-body")).text
-# loginStatus = wait.until(ec.presence_of_element_located(By.XPATH, '/html/body/div[1]/div/div/div/div/div[2]/div[2]/div[
-    # 2]/div/div[3]/div/div/div[1]'))
-    #loginStatus = driver.find_element_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div[2]/div[2]/div/div[3]/div/div/div[1]").text
+    wait = WebDriverWait(driver, 10)
+    loginStatus = wait.until(ec.visibility_of_element_located((By.CLASS_NAME, "Toastify__toast-body"))).text
+    print(loginStatus)
     driver.refresh()
 
     displayed_name = driver.find_element_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[1]/div/span[2]").text
@@ -93,7 +90,6 @@ def test_logoutUser(test_openBrowser):
 
     driver.find_element_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div[1]/div/div/h5").click()
     driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[2]/button[1]/span[1]").click()
-    print("Logging out==========")
     actualUrl = driver.current_url
     expectedUrl = "https://console.cognitensor.com/login"
     assert actualUrl == expectedUrl
