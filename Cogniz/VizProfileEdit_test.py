@@ -31,12 +31,12 @@ def test_openBrowser():
     global driver
     driver = webdriver.Firefox(executable_path="D:/Installed Apps/Webdrivers/geckodriver-v0.26.0-win64/geckodriver.exe")
     # driver.implicitly_wait(30)
-    driver.maximize_window
+    driver.maximize_window()
 
     yield driver
 
     driver.implicitly_wait(10)
-    #driver.quit()
+    driver.quit()
 
 def test_gotoUrl(test_openBrowser):
     # navigate to the application home page
@@ -107,10 +107,10 @@ def test_changePassword(test_openBrowser):
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[1]/div/input").send_keys(password)
 
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/input").clear()
-    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/input").send_keys("")
+    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div/input").send_keys(password)
 
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[3]/div/input").clear()
-    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[3]/div/input").send_keys("")
+    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[3]/div/input").send_keys(password)
 
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/button/span[1]").click()
 
@@ -119,23 +119,48 @@ def test_changePassword(test_openBrowser):
     #toast = driver.find_element_by_class_name("Toastify__toast-container Toastify__toast-container--bottom-right").text
     print(toast)
 
+    # Logout and login again to verify changed password
+
+    #Logout
+    driver.find_element_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div[1]/div/div/h5").click()
+    driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[2]/button[1]/span[1]").click()
+
+    #Login again
+
     driver.implicitly_wait(20)
-    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[1]/a[1]/span").click()
+    driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/input').send_keys("qatester@cognitensor.com")
+    driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/input').send_keys(password)
+    driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[3]/div/button/span[1]').click()
+
+    actualHead = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/h2").text
+    expectedHead = "Deep Optics"
+    assert actualHead == expectedHead
+
 
 def test_dashboard(test_openBrowser):
 
+    expected_dashboard = "test_board1"
+    driver.implicitly_wait(20)
+
+    #Click Viz link
+    driver.find_element_by_xpath("/html/body/div[1]/div/div[1]/div/div/div[1]/div/a[2]").click()
+
+    #Click dashboard option in sidebar
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[1]/div/a[2]/div/span").click()
 
-    driver.find_element_by_link_text("test_board1").click()
+    #Click the desired dashboard with text "expected_dashboard"
+    driver.find_element_by_link_text(expected_dashboard).click()
+
+    actual_dashboard = driver.find_element_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div/div[1]/div/div[1]/div/div[2]/span").text
+
+    assert expected_dashboard == actual_dashboard
 
 
+def test_logoutUser(test_openBrowser):
 
-
-# def test_logoutUser(test_openBrowser):
-#
-#     driver.find_element_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div[1]/div/div/h5").click()
-#     driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[2]/button[1]/span[1]").click()
-#     actualUrl = driver.current_url
-#     expectedUrl = "https://console.cognitensor.com/login"
-#     assert actualUrl == expectedUrl
+    driver.find_element_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div[1]/div/div/h5").click()
+    driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[2]/button[1]/span[1]").click()
+    actualUrl = driver.current_url
+    expectedUrl = "https://console.cognitensor.com/login"
+    assert actualUrl == expectedUrl
 
