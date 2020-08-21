@@ -1,3 +1,5 @@
+import time
+
 from selenium import webdriver
 import pytest
 from selenium.webdriver.common.by import By
@@ -23,9 +25,12 @@ def test_openBrowser():
     # driver.implicitly_wait(30)
     driver.maximize_window()
 
+    # yield is used to call all the linked functions with current function through fixture
+
     # yield driver
-    #
     # driver.implicitly_wait(10)
+
+    # close the browser in the end
     # driver.quit()
 
 def test_gotoUrl(test_openBrowser):
@@ -42,15 +47,21 @@ def test_login(test_openBrowser):
 
     driver.find_element_by_xpath("/html/body/div/div/div/header/div[2]/div[2]/a[7]").click()
     driver.implicitly_wait(20)
+
+    # fill login form
     driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[1]/div/input').send_keys("qatester@cognitensor.com")
     driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[2]/div/input').send_keys(password)
     driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div[2]/div[3]/div/button/span[1]').click()
     driver.implicitly_wait(20)
+
+    # get text appears in the landing page for assertion
     actualHead = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/h2").text
     expectedHead = "Deep Optics"
     assert actualHead == expectedHead
 
 def test_clickViz(test_openBrowser):
+
+    # Click the "Viz" at the top to navigate to Cogniviz
     driver.find_element_by_xpath("/html/body/div[1]/div/div[1]/div/div/div[1]/div/a[2]").click()
     actualUrl = driver.current_url
     expectedUrl = "https://console.cognitensor.com/athena"
@@ -157,6 +168,10 @@ def test_countTabs(test_openBrowser):
 def test_countComponents_tab1(test_openBrowser):
     expected_components = 32
     actual_components = len(driver.find_elements_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div/div[2]/div[2]/div"))
+    alert = "alert('Total Components = {}')".format(actual_components)
+    driver.execute_script(alert)
+    time.sleep(4)
+    driver.switch_to.alert.accept()
     assert expected_components == actual_components
 
 # def test_logoutUser(test_openBrowser):
