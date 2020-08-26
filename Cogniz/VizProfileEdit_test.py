@@ -9,7 +9,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 password = "admin12345"
 
-@pytest.fixture(params =["firefox"], scope='module')
+@pytest.fixture(params =["firefox","chrome","opera","edge"], scope='module')
 def test_init(request):
     # open browser window
     global driver
@@ -27,11 +27,11 @@ def test_init(request):
 
     # yield is used to call all the linked functions with current function through fixture
 
-    # yield driver
+    yield driver
     # driver.implicitly_wait(10)
 
     # close the browser in the end
-    # driver.quit()
+    driver.quit()
 
 def test_gotoUrl(test_init):
     # navigate to the application home page
@@ -91,13 +91,13 @@ def test_editUser(test_init):
 
 
 
-    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[1]/div/div/div/input").clear()
+    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[1]/div/div/div/input").send_keys(Keys.CONTROL + "a", Keys.DELETE)
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[1]/div/div/div/input").send_keys(first_name)
-    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[2]/div/div/div/input").clear()
+    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[2]/div/div/div/input").send_keys(Keys.CONTROL + "a", Keys.DELETE)
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[2]/div/div/div/input").send_keys(last_name)
-    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[3]/div/div/div/input").clear()
+    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[3]/div/div/div/input").send_keys(Keys.CONTROL + "a", Keys.DELETE)
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[3]/div/div/div/input").send_keys(department)
-    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[4]/div/div/div/input").clear()
+    driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[4]/div/div/div/input").send_keys(Keys.CONTROL + "a", Keys.DELETE)
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[4]/div/div/div/input").send_keys(company_profile)
     driver.find_element_by_xpath("//*[@id=\"dashboard\"]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[2]/div/div[5]/button/span[1]").click()
 
@@ -177,15 +177,50 @@ def test_countTabs(test_init):
 
 
 def test_countComponents_tab1(test_init):
+
+    #Count the number of components displayed in tab1
     expected_components_tab1 = 32
     actual_components_tab1 = len(driver.find_elements_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div/div[2]/div[2]/div"))
     alert = "alert('Total Components = {}')".format(actual_components_tab1)
     driver.execute_script(alert)
     time.sleep(4)
     driver.switch_to.alert.accept()
+
+    driver.switch_to.default_content()
+    no_data_tab_count = 0
+    for com in range(actual_components_tab1):
+        com_div = com + 1
+
+        try:
+            large_view_icon = driver.find_element_by_xpath("//*[@id=\"dashboard-tab\"]/div[2]/div[2]/div[{}]/div[1]/div/div/i".format(com_div)).is_displayed()
+            if large_view_icon:
+                driver.find_element_by_xpath("//*[@id=\"dashboard-tab\"]/div[2]/div[2]/div[{}]/div[1]/div/div/i".format(com_div)).click()
+                time.sleep(3)
+                driver.find_element_by_css_selector("body > div.ui.page.modals.dimmer.transition.visible.active > div > i").click()
+            else:
+                com_div = com_div + 1
+        except Exception as e:
+            pass
+
+        try:
+            if driver.find_element_by_xpath("//*[@id=\"dashboard-tab\"]/div[2]/div[2]/div[{}]/div[2]/div/span".format(com_div)).is_enabled():
+                no_data_tab_count = no_data_tab_count + 1
+        except Exception as e:
+            print(e)
+
+        driver.switch_to.default_content()
+
+    print(no_data_tab_count)
+    alert1 = "alert('Total Components with no data in tab1 = {}')".format(no_data_tab_count)
+    driver.execute_script(alert1)
+    time.sleep(3)
+    driver.switch_to.alert.accept()
+    driver.switch_to.default_content()
     assert expected_components_tab1 == actual_components_tab1
 
 def test_countComponents_tab2(test_init):
+
+    # Count the number of components displayed in tab2
     expected_components_tab2 = 5
     driver.switch_to.default_content()
     driver.find_element_by_xpath("//*[@id=\"simple-tab-1\"]").click()
@@ -194,14 +229,37 @@ def test_countComponents_tab2(test_init):
     driver.execute_script(alert)
     time.sleep(3)
     driver.switch_to.alert.accept()
-
     driver.switch_to.default_content()
+    no_data_tab_count = 0
     for com in range(actual_components_tab2):
         com_div = com + 1
 
-        driver.find_element_by_xpath("//*[@id=\"dashboard-tab\"]/div[2]/div[2]/div[{}]/div[1]/div/div/i".format(com_div)).click()
-        time.sleep(3)
-        driver.find_element_by_css_selector("body > div.ui.page.modals.dimmer.transition.visible.active > div > i").click()
+        try:
+            large_view_icon = driver.find_element_by_xpath("//*[@id=\"dashboard-tab\"]/div[2]/div[2]/div[{}]/div[1]/div/div/i".format(com_div)).is_displayed()
+            if large_view_icon:
+                driver.find_element_by_xpath("//*[@id=\"dashboard-tab\"]/div[2]/div[2]/div[{}]/div[1]/div/div/i".format(com_div)).click()
+                time.sleep(3)
+                driver.find_element_by_css_selector("body > div.ui.page.modals.dimmer.transition.visible.active > div > i").click()
+            else:
+                com_div = com_div + 1
+        except Exception as e:
+            pass
+
+        try:
+            if driver.find_element_by_xpath("//*[@id=\"dashboard-tab\"]/div[2]/div[2]/div[{}]/div[2]/div/span".format(com_div)).is_enabled():
+                no_data_tab_count = no_data_tab_count + 1
+        except Exception as e:
+            print(e)
+
+        driver.switch_to.default_content()
+
+
+    print(no_data_tab_count)
+    alert1 = "alert('Total Components with no data in tab2 = {}')".format(no_data_tab_count)
+    driver.execute_script(alert1)
+    time.sleep(3)
+    driver.switch_to.alert.accept()
+    driver.switch_to.default_content()
 
     assert expected_components_tab2 == actual_components_tab2
 
