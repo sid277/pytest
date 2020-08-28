@@ -1,15 +1,13 @@
-import time
-from selenium import webdriver
 import pytest
-from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 password = "admin12345"
 
 @pytest.mark.usefixtures("test_init")
+@pytest.mark.skip(reason="no way of currently testing this")
+
 class BaseTest:
     pass
 

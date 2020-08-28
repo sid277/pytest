@@ -7,7 +7,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-@pytest.fixture(params=["firefox", "chrome"], scope='class')
+@pytest.fixture(params=["firefox"], scope='class')
+#@pytest.fixture(params=["firefox", "chrome", "opera", "edge"], scope='class')
 def test_init(request):
     # open browser window
     if request.param == "firefox":
@@ -28,4 +29,4 @@ def test_init(request):
     # driver.implicitly_wait(10)
 
     # close the browser in the end
-    web_driver.quit()
+    #web_driver.quit()
