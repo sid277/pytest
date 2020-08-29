@@ -2,7 +2,7 @@ import pytest
 password = "admin12345"
 
 @pytest.mark.usefixtures("test_init")
-@pytest.mark.skip(reason="no way of currently testing this")
+#@pytest.mark.skip(reason="no way of currently testing this")
 
 class BaseTest:
     pass
@@ -27,4 +27,5 @@ class Test_Viz(BaseTest):
         # get text appears in the landing page for assertion
         actualHead = self.driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/h2").text
         expectedHead = "Deep Optics"
+        print("login test")
         assert actualHead == expectedHead

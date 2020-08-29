@@ -8,7 +8,7 @@ password = "admin12345"
 
 
 @pytest.mark.usefixtures("test_init")
-@pytest.mark.skip(reason="no way of currently testing this")
+#@pytest.mark.skip(reason="no way of currently testing this")
 
 class BaseTest:
     pass

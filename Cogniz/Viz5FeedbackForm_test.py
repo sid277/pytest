@@ -8,7 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 password = "admin12345"
 
 @pytest.mark.usefixtures("test_init")
-@pytest.mark.skip(reason="no way of currently testing this")
+#@pytest.mark.skip(reason="no way of currently testing this")
 
 class BaseTest:
     pass
@@ -64,7 +64,7 @@ class Test_Viz(BaseTest):
 
         wait = WebDriverWait(self.driver, 10)
         loginStatus = wait.until(ec.visibility_of_element_located((By.CLASS_NAME, "Toastify__toast-body"))).text
-        print("================ Toast Message after Profile Edit: " + loginStatus + " ================")
+        print("================ Toast Message after Rate Cogniviz form: " + loginStatus + " ================")
 
         assert loginStatus=="Thanks for the review!"
 
@@ -88,7 +88,7 @@ class Test_Viz(BaseTest):
 
             wait = WebDriverWait(self.driver, 10)
             loginStatus = wait.until(ec.visibility_of_element_located((By.CLASS_NAME, "Toastify__toast-body"))).text
-            print("================ Toast Message after Profile Edit: " + loginStatus + " ================")
+            print("================ Toast Message after HelpUsImprove feedback form: " + loginStatus + " ================")
         except Exception as e:
             print(e)
 
@@ -120,7 +120,7 @@ class Test_Viz(BaseTest):
 
             wait = WebDriverWait(self.driver, 10)
             loginStatus = wait.until(ec.visibility_of_element_located((By.CLASS_NAME, "Toastify__toast-body"))).text
-            print("================ Toast Message after Profile Edit: " + loginStatus + " ================")
+            print("================ Toast Message after Help feedback form: " + loginStatus + " ================")
         except Exception as e:
             print(e)
 

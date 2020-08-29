@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -56,6 +58,7 @@ class Test_Viz(BaseTest):
 
     def test_countTabs(self):
 
+        expected_no_tabs = 3
         # Count the div containing the components
         actual_no_tabs = len(self.driver.find_elements_by_class_name("MuiTab-wrapper"))
         print("================== Total number of Tabs in dashboard: " + str(actual_no_tabs) + " =======================")
@@ -77,7 +80,7 @@ class Test_Viz(BaseTest):
                 actual_components_in_tab = len(self.driver.find_elements_by_xpath("/html/body/div[1]/div/div/div/div/div[2]/div/div[2]/div[2]/div"))
 
                 print("===========================================")
-                print(" Total Components in {}: ".format(tab_name) + str(actual_components_in_tab))
+                print(" Total Components in tab {}: ".format(tab_name) + str(actual_components_in_tab))
 
                 # alert = "alert('Total Components in tab2 = {}')".format(actual_components_tab2)
                 # self.driver.execute_script(alert)
@@ -129,6 +132,8 @@ class Test_Viz(BaseTest):
                 #self.driver.find_element_by_xpath("//*[@id=\"dashboard-tab\"]/div[2]/div[1]/div/div/div[1]/span/div/button[2]").click()
 
                 print("===========================================")
+
+        assert actual_no_tabs==expected_no_tabs
 
                 # alert1 = "alert('Total Components with no data in tab2 = {}')".format(no_data_tab_count)
                 # self.driver.execute_script(alert1)
